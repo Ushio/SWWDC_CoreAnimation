@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07D0C7431636275F00864F49 /* CALayer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D0C7421636275F00864F49 /* CALayer+Blocks.m */; };
 		A6B0703916358527007DCF2F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6B0703816358527007DCF2F /* UIKit.framework */; };
 		A6B0703B16358527007DCF2F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6B0703A16358527007DCF2F /* Foundation.framework */; };
 		A6B0703D16358527007DCF2F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6B0703C16358527007DCF2F /* CoreGraphics.framework */; };
@@ -18,9 +19,12 @@
 		A6B0704F16358527007DCF2F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A6B0704E16358527007DCF2F /* Default-568h@2x.png */; };
 		A6B0705216358527007DCF2F /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6B0705016358527007DCF2F /* MainStoryboard.storyboard */; };
 		A6B0705516358527007DCF2F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B0705416358527007DCF2F /* ViewController.m */; };
+		A6B0705C16358547007DCF2F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6B0705B16358547007DCF2F /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07D0C7411636275F00864F49 /* CALayer+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CALayer+Blocks.h"; sourceTree = "<group>"; };
+		07D0C7421636275F00864F49 /* CALayer+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+Blocks.m"; sourceTree = "<group>"; };
 		A6B0703416358527007DCF2F /* Bounce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bounce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6B0703816358527007DCF2F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A6B0703A16358527007DCF2F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -37,6 +41,7 @@
 		A6B0705116358527007DCF2F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		A6B0705316358527007DCF2F /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		A6B0705416358527007DCF2F /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		A6B0705B16358547007DCF2F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6B0705C16358547007DCF2F /* QuartzCore.framework in Frameworks */,
 				A6B0703916358527007DCF2F /* UIKit.framework in Frameworks */,
 				A6B0703B16358527007DCF2F /* Foundation.framework in Frameworks */,
 				A6B0703D16358527007DCF2F /* CoreGraphics.framework in Frameworks */,
@@ -56,6 +62,7 @@
 		A6B0702916358527007DCF2F = {
 			isa = PBXGroup;
 			children = (
+				A6B0705B16358547007DCF2F /* QuartzCore.framework */,
 				A6B0703E16358527007DCF2F /* Bounce */,
 				A6B0703716358527007DCF2F /* Frameworks */,
 				A6B0703516358527007DCF2F /* Products */,
@@ -83,6 +90,8 @@
 		A6B0703E16358527007DCF2F /* Bounce */ = {
 			isa = PBXGroup;
 			children = (
+				07D0C7411636275F00864F49 /* CALayer+Blocks.h */,
+				07D0C7421636275F00864F49 /* CALayer+Blocks.m */,
 				A6B0704716358527007DCF2F /* AppDelegate.h */,
 				A6B0704816358527007DCF2F /* AppDelegate.m */,
 				A6B0705016358527007DCF2F /* MainStoryboard.storyboard */,
@@ -176,6 +185,7 @@
 				A6B0704516358527007DCF2F /* main.m in Sources */,
 				A6B0704916358527007DCF2F /* AppDelegate.m in Sources */,
 				A6B0705516358527007DCF2F /* ViewController.m in Sources */,
+				07D0C7431636275F00864F49 /* CALayer+Blocks.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +302,7 @@
 				A6B0705A16358527007DCF2F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
