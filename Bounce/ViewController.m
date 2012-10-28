@@ -125,6 +125,9 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
         
         float time = CACurrentMediaTime() + remap(i, 0, rects.count - 1, 0.0, 1.0);
         
+        //前回のアニメーションをクリア
+        [layer removeAllAnimations];
+        
         //フェーズ１
         const float PHESE1_DURATION = 1.0;
         //縮むアニメーション
