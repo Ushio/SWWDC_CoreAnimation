@@ -8,10 +8,13 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+/**
+ *blocksを使って使いやすく
+ */
 @interface CALayer (Utility)
-- (void)bindBasicAnimationWithKeyPath:(NSString *)keyPath
+- (void)addBasicAnimationWithKeyPath:(NSString *)keyPath
                          construction:(void(^)(CABasicAnimation *animation))construction;
 
-- (void)bindKeyframeAnimationWithKeyPath:(NSString *)keyPath
+- (void)addKeyframeAnimationWithKeyPath:(NSString *)keyPath
                             construction:(void(^)(CAKeyframeAnimation *animation))construction;
 @end

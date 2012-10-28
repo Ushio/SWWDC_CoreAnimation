@@ -10,7 +10,7 @@
 #import "NSString+UUID.h"
 
 @implementation CALayer (Utility)
-- (void)bindBasicAnimationWithKeyPath:(NSString *)keyPath
+- (void)addBasicAnimationWithKeyPath:(NSString *)keyPath
                          construction:(void(^)(CABasicAnimation *animation))construction
 {
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:keyPath];
@@ -18,7 +18,7 @@
     [self addAnimation:animation forKey:[NSString stringWithUuid]];
 }
 
-- (void)bindKeyframeAnimationWithKeyPath:(NSString *)keyPath
+- (void)addKeyframeAnimationWithKeyPath:(NSString *)keyPath
                             construction:(void(^)(CAKeyframeAnimation *animation))construction
 {
     CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:keyPath];

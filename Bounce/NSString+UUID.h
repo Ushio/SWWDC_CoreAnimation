@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ *UUIDを作成する
+ */
 @interface NSString (UUID)
 /**
  *UUIDを作成する
