@@ -60,14 +60,14 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
     }
     return 0;
 }
-
 /**
  *クラス実装
  */
 @implementation ViewController
 {
+    __weak IBOutlet UIButton *startButton;
+    
     NSArray *rects;
-    NSTimer *animationControllTimer;
 }
 
 - (void)viewDidLoad
@@ -109,67 +109,75 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
     }
     rects = _rects;
     
-    /*アニメーションの起動ルーチン*/
-    animationControllTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(animationTimerTick:) userInfo:nil repeats:YES];
-    [self animationTimerTick:animationControllTimer];
+    [self.view bringSubviewToFront:startButton];
 }
 
 /**
- *アニメーションを引き起こすタイマーメソッド
+ *アニメーション開始
  */
-- (void)animationTimerTick:(NSTimer *)sender
+- (IBAction)onStartButton:(id)sende
 {
+    startButton.enabled = NO;
+    startButton.alpha = 0.5;
+    
     for(int i = 0 ; i < rects.count ; ++i)
     {
         CALayer *layer = rects[i];
         
-        float time = CACurrentMediaTime() + remap(i, 0, rects.count - 1, 0.0, 1.0);
-        
-        //前回のアニメーションをクリア
-        [layer removeAllAnimations];
+        //右にいくごとにアニメーション開始が遅延される
+        float beginTime = CACurrentMediaTime() + remap(i, 0, rects.count - 1, 0.0, 1.0);
         
         //フェーズ１
         const float PHESE1_DURATION = 1.0;
         //縮むアニメーション
-        [layer addBasicAnimationWithKeyPath:@"bounds" construction:^(CABasicAnimation *animation) {
-            animation.beginTime = time;
+        [layer addBasicAnimationWithKeyPath:@"bounds.size.height" construction:^(CABasicAnimation *animation) {
+            animation.beginTime = beginTime;
             animation.duration = PHESE1_DURATION;
-            animation.fromValue = [NSValue valueWithCGRect:(CGRect){0, 0, 50, 70}];
-            animation.toValue = [NSValue valueWithCGRect:(CGRect){0, 0, 50, 20}];
+            animation.fromValue = @70;
+            animation.toValue = @20;
             animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.0:0.7:0.3:1.0];
             animation.removedOnCompletion = NO;
             animation.fillMode = kCAFillModeForwards;
         }];
-        [layer addBasicAnimationWithKeyPath:@"shadowPath" construction:^(CABasicAnimation *animation) {
-            animation.beginTime = time;
+        [layer addBasicAnimationWithKeyPath:@"bounds.size.width" construction:^(CABasicAnimation *animation) {
+            animation.beginTime = beginTime;
             animation.duration = PHESE1_DURATION;
-            animation.fromValue = (id)[UIBezierPath bezierPathWithRoundedRect:(CGRect){0, 0, 50, 70} cornerRadius:5.0].CGPath;
-            animation.toValue = (id)[UIBezierPath bezierPathWithRoundedRect:(CGRect){0, 0, 50, 20} cornerRadius:5.0].CGPath;
+            animation.fromValue = @50;
+            animation.toValue = @60;
             animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.0:0.7:0.3:1.0];
             animation.removedOnCompletion = NO;
             animation.fillMode = kCAFillModeForwards;
         }];
-        time += PHESE1_DURATION;
+        beginTime += PHESE1_DURATION;
         
         //フェーズ２
         const float PHESE2_DURATION = 0.05f;
         //はじけるアニメーション
-        [layer addBasicAnimationWithKeyPath:@"bounds" construction:^(CABasicAnimation *animation) {
-            animation.beginTime = time;
+        [layer addBasicAnimationWithKeyPath:@"bounds.size.height" construction:^(CABasicAnimation *animation) {
+            animation.beginTime = beginTime;
             animation.duration = PHESE2_DURATION;
-            animation.fromValue = [NSValue valueWithCGRect:(CGRect){0, 0, 50, 20}];
-            animation.toValue = [NSValue valueWithCGRect:(CGRect){0, 0, 50, 70}];
+            animation.fromValue = @20;
+            animation.toValue = @70;
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
             animation.removedOnCompletion = NO;
             animation.fillMode = kCAFillModeForwards;
         }];
-        time += PHESE2_DURATION;
+        [layer addBasicAnimationWithKeyPath:@"bounds.size.width" construction:^(CABasicAnimation *animation) {
+            animation.beginTime = beginTime;
+            animation.duration = PHESE2_DURATION;
+            animation.fromValue = @60;
+            animation.toValue = @50;
+            animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.0:0.7:0.3:1.0];
+            animation.removedOnCompletion = NO;
+            animation.fillMode = kCAFillModeForwards;
+        }];
+        beginTime += PHESE2_DURATION;
         
         //フェーズ３
         //ジャンプアニメーション
         const float PHESE3_DURATION = 1.0;
         [layer addKeyframeAnimationWithKeyPath:@"position.y" construction:^(CAKeyframeAnimation *animation) {
-            animation.beginTime = time;
+            animation.beginTime = beginTime;
             animation.duration = PHESE3_DURATION;
             animation.values = @[@480, @100, @480];
             animation.timingFunctions = @[
@@ -180,14 +188,10 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
             animation.fillMode = kCAFillModeForwards;
         }];
         
-        [layer addKeyframeAnimationWithKeyPath:@"anchorPoint" construction:^(CAKeyframeAnimation *animation) {
-            animation.beginTime = time;
+        [layer addKeyframeAnimationWithKeyPath:@"anchorPoint.y" construction:^(CAKeyframeAnimation *animation) {
+            animation.beginTime = beginTime;
             animation.duration = PHESE3_DURATION;
-            animation.values = @[
-                [NSValue valueWithCGPoint:(CGPoint){0.5, 1.0}],
-                [NSValue valueWithCGPoint:(CGPoint){0.5, 0.5}],
-                [NSValue valueWithCGPoint:(CGPoint){0.5, 0.0}],
-            ];
+            animation.values = @[@1.0, @0.5, @0.0];
             animation.timingFunctions = @[
                 [CAMediaTimingFunction functionWithControlPoints:0.0:0.6:0.4:1.0],
                 [CAMediaTimingFunction functionWithControlPoints:0.6:0.0:1.0:0.4],
@@ -197,44 +201,60 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
         }];
         
         [layer addKeyframeAnimationWithKeyPath:@"transform.rotation.z" construction:^(CAKeyframeAnimation *animation) {
-            animation.beginTime = time;
+            animation.beginTime = beginTime;
             animation.duration = PHESE3_DURATION;
-            animation.values = @[@0.0, @(M_PI * 0.5), @(M_PI) ];
+            animation.values = @[@0.0, @(M_PI)];
             animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.7:0.0:0.3:1.0];
             animation.removedOnCompletion = NO;
             animation.fillMode = kCAFillModeForwards;
         }];
         
-        time += PHESE3_DURATION;
+        beginTime += PHESE3_DURATION;
         
         
         //フェーズ４
+        //ぷるぷるアニメーション
         const float PHESE4_DURATION = 1.1f;
         [layer addKeyframeAnimationWithKeyPath:@"bounds" construction:^(CAKeyframeAnimation *animation) {
-            animation.beginTime = time;
+            animation.beginTime = beginTime;
             animation.duration = PHESE4_DURATION;
             NSMutableArray *values = [NSMutableArray array];
+            const double AMPLITUDE = 30.0;
             for(int i = 0 ; i < 45 ; ++i)
             {
                 double t = remap(i, 0, 44, 0.0, 1.0);
                 
-                double h = 70.0 - sin(M_PI * 2.0 * t * 4.0) * (1.0 - t) * 30.0;
-                [values addObject:[NSValue valueWithCGRect:(CGRect){0, 0, 50, h}]];
+                double h = 70.0 - sin(M_PI * 2.0 * t * 4.0) * (1.0 - t) * AMPLITUDE;
+                double w = remap(h - 70, -AMPLITUDE, AMPLITUDE, 60, 40);
+                [values addObject:[NSValue valueWithCGRect:CGRectMake(0, 0, w, h)]];
             }
             animation.values = values;
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
             animation.removedOnCompletion = NO;
             animation.fillMode = kCAFillModeForwards;
+            animation.delegate = self; /* retain */
+            [animation setValue:@(i) forKey:@"layerIndex"];
         }];
-        
-        time += PHESE4_DURATION;
+        beginTime += PHESE4_DURATION;
     }
 }
 
-- (void)didReceiveMemoryWarning
+/**
+ *アニメーション完了時
+ */
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    int layerIndex = [[anim valueForKey:@"layerIndex"] intValue];
+    if(layerIndex == 4)
+    {
+        for(CALayer *layer in rects)
+        {
+            [layer removeAllAnimations];
+        }
+        
+        startButton.enabled = YES;
+        startButton.alpha = 1.0;
+    }
 }
 
 @end
