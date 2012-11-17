@@ -66,8 +66,23 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
 @implementation ViewController
 {
     __weak IBOutlet UIButton *startButton;
+    __weak IBOutlet UISlider *slider;
     
     NSArray *rects;
+}
+- (IBAction)onSliderChanged:(UISlider *)sender
+{
+    //速度の動的変更
+    
+    //時間の式は childLayerの時間 = (parentLayerの時間 - childLayer.beginTime) * childLayer.speed + childLayer.timeOffset
+    
+    //ポイント：アニメーション中にスピードを変更するには、timeOffset、beginTimeが正しく設定されていなければならない
+    //ポイント：スピードを変更すると、beginTimeとtimeOffsetを調整して、子の現在時間を調整する必要がある
+    //ポイント：timeOffsetは計算式から分かるように子の時間を基準とするため、convertTimeが必要
+    //ポイント：beginTimeは計算式から分かるように親の時間を基準とするため、convertTimeは使わない。またこの場合の親はいないので、グローバルタイム基準である。
+    self.view.layer.timeOffset = [self.view.layer convertTime:CACurrentMediaTime() fromLayer:nil];
+    self.view.layer.beginTime = CACurrentMediaTime();
+    self.view.layer.speed = remap(slider.value, 0, 1, 0, 2);
 }
 
 - (void)viewDidLoad
@@ -83,7 +98,7 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
     ];
     gradientlayer.locations = @[@0.0, @1.0];
     gradientlayer.startPoint = CGPointMake(0, 0); /*左上から*/
-    gradientlayer.endPoint = CGPointMake(1, 1);   /*右上まで*/
+    gradientlayer.endPoint = CGPointMake(1, 1);   /*右下まで*/
     [self.view.layer addSublayer:gradientlayer];
     
     /*矩形一つ一つのsettei*/
@@ -110,6 +125,7 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
     rects = _rects;
     
     [self.view bringSubviewToFront:startButton];
+    [self.view bringSubviewToFront:slider];
 }
 
 /**
@@ -119,13 +135,14 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
 {
     startButton.enabled = NO;
     startButton.alpha = 0.5;
-    
+     
     for(int i = 0 ; i < rects.count ; ++i)
     {
         CALayer *layer = rects[i];
         
-        //右にいくごとにアニメーション開始が遅延される
-        float beginTime = CACurrentMediaTime() + remap(i, 0, rects.count - 1, 0.0, 1.0);
+        //右にいくごとにアニメーション開始が遅延される レイヤーはそれぞれローカル時間をもっていて、グローバル時間はコンバートしなければならない
+        float beginTime = [self.view.layer convertTime:CACurrentMediaTime() fromLayer:nil] + remap(i, 0, rects.count - 1, 0.0, 1.0);
+        //float beginTime = CACurrentMediaTime() + remap(i, 0, rects.count - 1, 0.0, 1.0); //誤り！
         
         //フェーズ１
         const float PHESE1_DURATION = 1.0;
@@ -136,8 +153,6 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
             animation.fromValue = @70;
             animation.toValue = @20;
             animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.0:0.7:0.3:1.0];
-            animation.removedOnCompletion = NO;
-            animation.fillMode = kCAFillModeForwards;
         }];
         [layer addBasicAnimationWithKeyPath:@"bounds.size.width" construction:^(CABasicAnimation *animation) {
             animation.beginTime = beginTime;
@@ -145,8 +160,6 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
             animation.fromValue = @50;
             animation.toValue = @60;
             animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.0:0.7:0.3:1.0];
-            animation.removedOnCompletion = NO;
-            animation.fillMode = kCAFillModeForwards;
         }];
         beginTime += PHESE1_DURATION;
         
@@ -184,8 +197,6 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
                 [CAMediaTimingFunction functionWithControlPoints:0.0:0.6:0.4:1.0],
                 [CAMediaTimingFunction functionWithControlPoints:0.6:0.0:1.0:0.4],
             ];
-            animation.removedOnCompletion = NO;
-            animation.fillMode = kCAFillModeForwards;
         }];
         
         [layer addKeyframeAnimationWithKeyPath:@"anchorPoint.y" construction:^(CAKeyframeAnimation *animation) {
@@ -230,8 +241,6 @@ static double rolled_over(double value, double rangeMin, double rangeMax)
             }
             animation.values = values;
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-            animation.removedOnCompletion = NO;
-            animation.fillMode = kCAFillModeForwards;
             animation.delegate = self; /* retain */
             [animation setValue:@(i) forKey:@"layerIndex"];
         }];
